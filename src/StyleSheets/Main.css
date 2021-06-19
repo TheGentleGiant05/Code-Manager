@@ -1,0 +1,33 @@
+.main {
+  margin-top: 6rem;
+}
+
+.main__row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.main__column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-basis: 100%;
+  flex: 1;
+  width: 300px;
+  height: 100px;
+  background-color: #575757;
+  border: 5px solid #000000;
+  border-radius: 5px;
+  font-size: 50px;
+  margin: 50px;
+  will-change: transform;
+  transition: transform 450ms;
+}
+
+.main__column:hover {
+  cursor: pointer;
+  transition: transform 125ms;
+  transform: scale(1.07);
+}

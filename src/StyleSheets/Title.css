@@ -1,0 +1,22 @@
+.title {
+  text-align: center;
+  background-color: #343434;
+  border: 5px solid #000000;
+  border-radius: 10px;
+  padding: 15px 15px;
+  margin-top: 2rem;
+  margin-left: 20vw;
+  margin-right: 20vw;
+  margin-bottom: 2rem;
+}
+
+.title h1 {
+  color: #000000;
+  font-size: 80px;
+  margin: 0;
+  /* font-weight: 100; */
+}
+
+.title h1:hover {
+  cursor: pointer;
+}
