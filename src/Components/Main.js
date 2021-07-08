@@ -18,7 +18,12 @@ function Main() {
       </div>
       <div className="main__row">
         <div className="main__column">Plan Day</div>
-        <div className="main__column">Habit Tracker</div>
+        <div
+          onClick={(e) => history.push("/habit-tracker")}
+          className="main__column"
+        >
+          Habit Tracker
+        </div>
       </div>
     </div>
   );
