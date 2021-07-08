@@ -37,8 +37,8 @@ function Project() {
       let data = snapshot.val();
       let newList = [];
       for (let d in data) {
-        // for-loop to append each project to the array from the line above
-        newList.push(data[d].task);
+        let item = { id: d, task: data[d].task };
+        newList.push(item);
       }
       // console.log(newList);
       setTaskList(newList);
@@ -104,14 +104,16 @@ function Project() {
   };
 
   const handleRemoveTask = (index) => {
+    let clickedTask = taskList[index];
     let newTaskList = [...taskList];
     newTaskList.splice(index, 1);
     setTaskList(newTaskList);
+    let taskRef = firebase.database().ref("tasks/" + clickedTask.id);
+    taskRef.remove();
   };
 
   const handleRemoveProject = (index) => {
     let clickedProject = projectList[index];
-    console.log(clickedProject);
     // removing from the UI
     let newProjectList = [...projectList];
     newProjectList.splice(index, 1);
@@ -155,14 +157,14 @@ function Project() {
         <h2 className="project__title">Tasks</h2>
         <div className="project__div--line"></div>
         <ul className="project__list">
-          {taskList.map((item) => {
+          {taskList.map((item, index) => {
             return (
-              <li key={item}>
-                {item}
+              <li key={item.id}>
+                {item.task}
                 <img
                   src={xIcon}
                   className="x-icon"
-                  onClick={() => handleRemoveTask}
+                  onClick={() => handleRemoveTask(index)}
                 />
               </li>
             );
