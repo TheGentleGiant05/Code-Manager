@@ -18,62 +18,74 @@ function Project() {
   // function to get project list from database
   const fetchData = () => {
     // es6 arrow function
-    const ref = firebase.database().ref("projects"); // get reference to part of db we want
-    ref.on("value", (snapshot) => {
+    const projRef = firebase.database().ref("projects");
+    projRef.on("value", (snapshot) => {
       // fire this code block on any value change in this section of db
-      let data = snapshot.val(); // save value of object that is tied to the reference point we specified earlier
-      let newList = []; // empty list to append data to later
+      let data = snapshot.val();
+      let newList = [];
       for (let d in data) {
-        // for-loop to append each project to the array from the line above
-        newList.push(data[d].project); // .push adds each item that for-loop passes over into array
+        let item = { id: d, project: data[d].project };
+        newList.push(item);
       }
       // console.log(newList);
       setProjectList(newList);
     });
+
+    const taskRef = firebase.database().ref("tasks");
+    taskRef.on("value", (snapshot) => {
+      // fire this code block on any value change in this section of db
+      let data = snapshot.val();
+      let newList = [];
+      for (let d in data) {
+        // for-loop to append each project to the array from the line above
+        newList.push(data[d].task);
+      }
+      // console.log(newList);
+      setTaskList(newList);
+    });
   };
 
   // function to update current project useState variable
-  const updateCurrentProject = (e) => {
-    // runs on onClick for any project listed on the screen
-    const projectName = e.target;
-    const projs = document.getElementsByTagName("p");
-    for (let i = 0; i < projs.length; i++) {
-      projs[i].className = "";
-    }
-    projectName.className = "project__list-selected-item";
-    // set currentProject useState var
-    const proj = e.target.innerText;
-    setCurrentProject(proj);
-    // console.log(currentProject);
-  };
+  // const updateCurrentProject = (e) => {
+  //   // runs on onClick for any project listed on the screen
+  //   const projectName = e.target;
+  //   const projs = document.getElementsByTagName("p");
+  //   for (let i = 0; i < projs.length; i++) {
+  //     projs[i].className = "";
+  //   }
+  //   projectName.className = "project__list-selected-item";
+  //   // set currentProject useState var
+  //   const proj = e.target.innerText;
+  //   setCurrentProject(proj);
+  //   // console.log(currentProject);
+  // };
 
   const handleProjectSubmit = (e) => {
     e.preventDefault();
-    setProjectList([...projectList, newProject]);
-    const projectsRef = firebase.database().ref("projects/");
-    const project = {
-      project: newProject,
-      tasks: taskList,
-    };
-    projectsRef.push(project);
+    if (newProject !== "") {
+      setProjectList([...projectList, newProject]);
+      const projectsRef = firebase.database().ref("projects/");
+      const project = {
+        project: newProject,
+      };
+      projectsRef.push(project);
+      setNewProject("");
+    } else {
+      alert("Please fill in the field before submitting :)");
+    }
     // alert(`Added Project: ${newProject}`);
-    setNewProject("");
   };
 
   const handleTaskSubmit = (e) => {
     e.preventDefault();
-    let projectRef = firebase
-      .database()
-      .ref("projects/")
-      .orderByChild("project")
-      .equalTo(currentProject);
     if (newTask !== "") {
-      if (currentProject !== "") {
-        setTaskList([...taskList, newTask]);
-        setNewTask("");
-      } else {
-        alert("Please select a project before adding a task :)");
-      }
+      setTaskList([...taskList, newTask]);
+      let tasksRef = firebase.database().ref("tasks/");
+      let task = {
+        task: newTask,
+      };
+      tasksRef.push(task);
+      setNewTask("");
     } else {
       alert("Please fill in the field before submitting :)");
     }
@@ -99,12 +111,13 @@ function Project() {
 
   const handleRemoveProject = (index) => {
     let clickedProject = projectList[index];
+    console.log(clickedProject);
     // removing from the UI
     let newProjectList = [...projectList];
     newProjectList.splice(index, 1);
     setProjectList(newProjectList);
     // removing from the DB
-    let projectRef = firebase.database().ref("projects/");
+    let projectRef = firebase.database().ref("projects/" + clickedProject.id);
     projectRef.remove();
   };
 
@@ -117,8 +130,8 @@ function Project() {
         <ul className="project__list">
           {projectList.map((item, index) => {
             return (
-              <li key={index}>
-                <p onClick={(e) => updateCurrentProject(e)}>{item}</p>
+              <li key={item.id}>
+                <p>{item.project}</p>
                 <img
                   src={xIcon}
                   className="x-icon"
