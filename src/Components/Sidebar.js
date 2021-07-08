@@ -32,7 +32,7 @@ function Sidebar() {
         </li>
         <li
           className="sidebar__list__item"
-          onClick={(e) => history.push("/habits")}
+          onClick={(e) => history.push("/habit-tracker")}
         >
           <img src={habits} />
           <a href="#">Habits</a>
